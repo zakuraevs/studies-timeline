@@ -29,6 +29,15 @@ function App() {
   const [data, setData] = useState(initialData)
 
 
+  const onDragStart = () => {
+
+  }
+
+  const onDragUpdate = () => {
+    
+  }
+
+
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result
 
@@ -73,6 +82,8 @@ function App() {
 
       <h2>To-do</h2>
       <DragDropContext
+        onDragStart={onDragStart}
+        onDragUpdate={onDragUpdate}
         onDragEnd={onDragEnd}
       >
         {data.columnOrder.map(columnId => {

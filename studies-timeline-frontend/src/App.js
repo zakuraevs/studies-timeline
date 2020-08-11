@@ -23,18 +23,45 @@ function App() {
       title: 'object-oriented programmming in C++',
       period: 2
     }
-  ] 
+  ]
 
-  const [ courses, setCourses ] = useState(initialCourses)
-  const [ data, setData ] = useState(initialData)
+  const [courses, setCourses] = useState(initialCourses)
+  const [data, setData] = useState(initialData)
 
-  //console.log('Initial data: ', initialData)
-  //console.log('data: ', data)
-
-  //const state = initialData
 
   const onDragEnd = (result) => {
-    
+    const { destination, source, draggableId } = result
+
+    if (!destination) {
+      return
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return
+    }
+
+    const column = data.columns[source.droppableId]
+    const newTaskId = Array.from(column.taskId)
+
+    newTaskId.splice(source.index, 1)
+    newTaskId.splice(destination.index, 0, draggableId)
+
+    const newColumn = {
+      ...column,
+      taskId: newTaskId
+    }
+
+    setData({
+      ...data, columns: {
+        ...data.columns,
+        [newColumn.id]: newColumn,
+      }
+    })
+
+
   }
 
   return (
@@ -44,15 +71,15 @@ function App() {
         {courses.map((course, index) => <li key={index}>{course.title}</li>)}
       </ul>
 
-      <h2>Draggable</h2>
+      <h2>To-do</h2>
       <DragDropContext
         onDragEnd={onDragEnd}
       >
         {data.columnOrder.map(columnId => {
           const column = data.columns[columnId]
-          const tasks = column.taskIds.map(taskId => data.tasks[taskId])
+          const tasks = column.taskId.map(taskId => data.tasks[taskId])
 
-          return <Column key={column.id} column ={column} tasks={tasks} />
+          return <Column key={column.id} column={column} tasks={tasks} />
         })}
       </DragDropContext>
     </div>
